@@ -4,9 +4,14 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { dirname, join, resolve } from 'node:path';
 import bootstrap from './src/main.server';
+import { connectMongo } from './utils/connectMongo';
+import TaskModel from './utils/db_models/task.model';
 
 // The Express app is exported so that it can be used by serverless Functions.
 export function app(): express.Express {
+  console.log('Am I here');
+
+  connectMongo();
   const server = express();
   const serverDistFolder = dirname(fileURLToPath(import.meta.url));
   const browserDistFolder = resolve(serverDistFolder, '../browser');
@@ -20,9 +25,17 @@ export function app(): express.Express {
   // Example Express Rest API endpoints
   // server.get('/api/**', (req, res) => { });
   // Serve static files from /browser
-  server.get('*.*', express.static(browserDistFolder, {
-    maxAge: '1y'
-  }));
+  server.get(
+    '*.*',
+    express.static(browserDistFolder, {
+      maxAge: '1y',
+    })
+  );
+
+  server.get('/api/tasks', (req, res) => {
+    const tasks = TaskModel.find();
+    res.json(tasks);
+  });
 
   // All regular routes use the Angular engine
   server.get('*', (req, res, next) => {

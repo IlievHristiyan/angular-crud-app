@@ -1,0 +1,16 @@
+<p>task-form works!</p>
+<p>Add/Edit tasks</p>
+<form>
+  <input
+    type="text"
+    placeholder="Task Title"
+    [(ngModel)]="task.title"
+    name="title"
+  />
+  <input
+    placeholder="Taks Description"
+    [(ngModel)]="task.description"
+    name="description"
+  />
+  <button type="submit" (click)="onSubmit()">Save Task</button>
+</form>
